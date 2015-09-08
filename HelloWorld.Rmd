@@ -1,0 +1,8 @@
+---
+title: "Hello World"
+author: "Joao Pinelo Silva"
+date: "September 8, 2015"
+output: html_document
+---
+
+## This is a markdown file
