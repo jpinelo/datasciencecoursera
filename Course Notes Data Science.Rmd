@@ -287,7 +287,7 @@ Non-evaluated example
 
 `lapply(unique_vals, function(elem) elem[2])`
 
-### Elipsis = ...  Allows an infinite munber of arguments to be passed into a function.
+### Elipsis = ...  Allows an infinite number of arguments to be passed into a function.
 When creating a function, all arguments created after an ellipses MUST have default values.
 Normally  `...` is the last argument. But there are exceptions, such as in `paste()`
 
@@ -368,7 +368,7 @@ age
 sapply(age, mean)
 ```
 
-# Extract percentage. See _Binary data makes it easy to compute percentage_ below
+### Extract percentage. See _Binary data makes it easy to compute percentage_ below
 
 
 ```{r, echoe = TRUE, eval = TRUE}
@@ -417,5 +417,19 @@ sapply(my_data, range)
 
 # returns the min (row 1) and max (row 2) values for each col.
 ```
+
+### list.files()  
+Returns character vector of the names of files or directories in the original directory.   
+
+### Conditional Subsetting with [[]]
+andy[which(andy$Day == 30), "Weight"]
+andy[which(andy[,"Day"] == 30), "Weight"]
+
+
+### do.call()  
+
+> do.call lets you specify a function and then passes a list as if each element of the list were an argument to the function. _Source: https://github.com/derekfranks/practice_assignment/blob/master/practice_assignment.rmd_
+
+do.call(function_you_want_to_use, list_of_arguments)  
 
 
