@@ -2,8 +2,9 @@
 title: "Data Science Course Notes"
 author: "Joao Pinelo Silva"
 date: "September 11, 2015"
-output: html_document
+output: pdf_document
 ---
+_________________________
 READ ME: These are my personal notes of studying R. It's a draft. A rather disorganised and incomplete draft. Use at your own peril :). If you find any mistake, please make a pull request.
 
 ### Calculating / Estimating Memory Requirements  
