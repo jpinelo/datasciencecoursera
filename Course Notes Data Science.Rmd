@@ -1,0 +1,421 @@
+---
+title: "Data Science Course Notes"
+author: "Joao Pinelo Silva"
+date: "September 11, 2015"
+output: html_document
+---
+
+### Calculating / Estimating Memory Requirements  
+DATA: Data frame with 1,500,000 rows and 120 columns of numeric data and a 64 bits
+
+Formula  
+_Number of rows x Number of columns x 8 bytes_  
+
+Why 8 bytes?  machine/OS is 64 bits = 8 bytes, since there are 8 bits per byte
+
+1,500,000 x 120 x 8 = 1440000000  
+
+1440000000 / 2^20 bytes/MB = 1,373.29 MB = 1.34 GB
+
+### R Connections  
+For example opening, reading and or writing files, open URL...
+
+### Create File
+``` {r, eval = FALSE}
+dput(x, file = "dputed_x.R")
+```
+file() basic arguments:  
+
+* description = name of file;  
+* open = code indicating:  
+    + "r" read only,  
+    + ""w writing and initializing a new file,  
+    + "a" appending,  
+    + "rb", "wb", "ab" reading, writing, or appending in binary mode (windows)  
+
+### Subsetting
+* `[` returns object of same class as original - can be used to extract more than one element (one exception)  
+* `[[` extract elements of list or df. Can extract a single element. Not necessarily resturn list or df.  
+* `$ extract elements of list or df by name.  
+  
+Order: _row_, _Column_
+   
+   
+**Subsetting vectors**  
+
+```{r, echo = TRUE, eval = TRUE}
+a <- rnorm(20)
+b <- rep(NA, 20)
+x <- sample(c(a,b), 15)
+x
+
+x[1:10]
+x[is.na(x)]
+y <- x[!is.na(x)]
+y[y > 0]
+x[x > 0]
+x[!is.na(x) & x > 0]
+x[c(3, 5, 7)]
+x[c(-2, -10, -12, -15)] # same as below, putting minus before 'c'
+x[-c(2, 10, 12, 15)]
+
+vect <- c(foo = 11, bar = 2, norf = NA)
+names(vect)
+
+vect2 <- c(11, 2, NA)
+names(vect2) <- c("foo", "bar", "norf")
+vect2
+
+vect["bar"]
+vect[c("foo", "bar")]
+
+```
+
+
+
+
+
+
+
+
+
+
+
+**Subsetting lists**  
+
+```{r, echo = TRUE, eval = TRUE}
+x <- list(foo = 1:4, bar = 0.6, baz = "hello")
+name <- "foo"
+x[[name]] # computed index for 'foo'
+x$name # element 'name' does not exist in x, therefore NULL below
+x$foo # element 'foo' does exist in x, and therefore its elements are printed below
+```
+
+
+* `[` returns element of list. Cannot use `[[` or `$` to extract multiple elements of list.  
+* `[[` returns neste elements - the element inside the list element. Can take integer seq.   
+
+```{r, echo = TRUE, eval = TRUE}
+x <- list(a = list(10, 12, 14), b = c(3.14, 2.81))  
+x[[c(1, 3)]]
+x[[1]][[3]]
+x[[c(2, 1)]]
+```
+
+## NAs - Select, See, and Eventually Remove
+```{r, echo = TRUE, eval = TRUE}
+x <- c(1, 2, NA, 4, NA, 6)
+NAs <- is.na(x)
+NAs
+
+x[!NAs]
+```
+
+**Removing NAs on combination of several rows/cols**  
+`complete.cases()` - Useful to keep only cases of database with only complete data accross multiple variables and subjects.  
+
+```{r, echo = TRUE, eval = TRUE}
+x <- c(1, 2, NA, 4)
+y <- c("a", "b", "c", NA)
+good <- complete.cases(x, y)
+good
+x[good]
+y[good]
+```
+
+**To use in data frames**  
+`good <- complete.cases(df)`, removes rows with NAs in accross all variables.  
+`df[good, ][1:6, ]`, will contain only rows where there are no NAs  
+
+
+### Sequences
+```{r, echo = TRUE, eval = TRUE}
+1:20
+pi:10 # 10 isn't reached as it would be over
+12:1
+```
+
+`seq()` args: `by`; `length`
+```{r, echo = TRUE, eval = TRUE}
+seq(1, 20)
+seq(1, 5, by = 0.5)
+seq(1, 5, length = 30)
+```
+
+
+```{r, echo = TRUE, eval = TRUE}
+my_seq <- 1:10
+1:length(my_seq)
+seq(along.with = my_seq)
+seq_along(my_seq)
+```
+
+**rep()**
+```{r, echo = TRUE, eval = TRUE}
+rep(0, times = 40)
+rep(c(1, 2, 3), times = 10)
+rep(c(1, 2, 3), each = 10)
+```
+
+### paste()
+args:  
+* `collapse` refers to separator of elements within a vector  
+* `sep` refers to separator of elements from different vectors
+
+```{r, echo = TRUE, eval = TRUE}
+my_name <- c("My", "name", "is", "joao")
+paste(my_name, collapse = " ")
+```
+```{r, echo = TRUE, eval = TRUE}
+paste(c(1:3), c("X", "Y", "Z"), sep = "")
+```
+```{r, echo = TRUE, eval = TRUE}
+paste(LETTERS, 1:4, sep = "-")
+```
+
+### Sample()
+```{r, echo = TRUE, eval = TRUE}
+y <- rnorm(100)
+z <- rep(NA, 100)
+my_data <- sample(c(y,z), 10)
+my_data
+```
+
+
+
+
+
+###identical()
+```{r, echoe = TRUE, eval = TRUE}
+vect <- c(foo = 11, bar = 2, norf = NA)
+vect2 <- c(11, 2, NA)
+names(vect2) <- c("foo", "bar", "norf")
+identical(vect, vect2)
+```
+
+###matrix()  
+```{r, echoe = TRUE, eval = TRUE}
+my_matrix <- matrix(data = 1:20, nrow = 4, ncol = 5)
+```
+
+
+###colnames()  
+```{r, echoe = TRUE, eval = TRUE}
+a <- c("John", 34, 65, 55, 45, 1)
+b <- c("Mary", 44, 45, 68, 45, 2)
+my_data <- data.frame(rbind(a, b)) # without data.frame, my_data would be a matrix and coerce all integers to char
+cnames <- c("patient", "age", "weight", "bp", "rating", "test")
+colnames(my_data) <- cnames
+my_data
+```
+
+### LOGICAL OPERATORS  
+`&` AND, recycles   
+`&&` AND, does not recycle, eveluates first element of vector only   
+
+`|` OR, recycles  
+`||` OR, does not recycle, eveluates first element of vector only  
+
+`&` has precedence over `|`  
+
+
+### isTRUE()  
+```{R echoe = TRUE, eval = TRUE}
+isTRUE(5 > 4)
+```
+
+### identical()  
+```{R echoe = TRUE, eval = TRUE}
+identical('nip', 'nip')
+```
+
+
+### xor()   
+Exclusive OR - TRUE if one (and only one) of args is TRUE  
+```{R echoe = TRUE, eval = TRUE}
+xor(TRUE, TRUE)
+```
+
+### which()  
+Takes logical vector as argument and returns indices of the vector that are TRUE
+```{R echoe = TRUE, eval = TRUE}
+ints <- sample(10)
+ints
+which(ints > 7)
+```
+
+### any()  
+Returns TRUE if one or more of the elements in the logical vector is TRUE
+```{R echoe = TRUE, eval = TRUE}
+ints <- sample(10)
+ints
+any(ints > 5)
+```
+
+### all()  
+Returns TRUE if one or more of the elements in the logical vector is TRUE
+```{R echoe = TRUE, eval = TRUE}
+ints <- sample(10)
+ints
+all(ints > 0)
+```
+
+### Create a function that takes another function as argument  
+
+``` {R echoe = TRUE, eval = FALSE}
+  evaluate <- function(func, dat){
+  result <- func(dat)
+  result
+}
+```
+
+### Anonimous Function
+Function that is defined but not named
+``` {R echoe = TRUE, eval = FALSE}
+  evaluate <- function(func, dat){ # create function `evaluate`
+  result <- func(dat)
+  result
+  }
+  
+evaluate(function(x){x+1}, 6)  # anonymous function inside `evaluate` function
+
+# Example:
+evaluate(function(x){x[1]}, c(8, 4, 0)) # Returns '8', the first element of vector 8,4,0
+evaluate(function(x){x[length(x)]}, c(8, 4, 0)) # Returns '0', the last element of the vector
+```  
+Non-evaluated example  
+
+`lapply(unique_vals, function(elem) elem[2])`
+
+### Elipsis = ...  Allows an infinite munber of arguments to be passed into a function.
+When creating a function, all arguments created after an ellipses MUST have default values.
+Normally  `...` is the last argument. But there are exceptions, such as in `paste()`
+
+### Elipsis inside function  
+```{R echo = TRUE, eval = FALSE}
+telegram <- function(...){
+  paste("START", ..., "STOP")
+}
+```
+
+### Unpacking function args  
+```{R echo = TRUE, eval = FALSE}
+mad_libs <- function(...){
+  # Do your argument unpacking here!
+  args <- list(...)
+  place <- args[["place"]]
+  adjective <- args[["adjective"]]
+  noun <- args[["noun"]]
+
+  # Don't modify any code below this comment.
+  # Notice the variables you'll need to create in order for the code below to
+  # be functional!
+  paste("News from", place, "today where", adjective, "students took to the streets in protest of the new", noun, "being installed on campus.")
+}
+```
+
+
+### Create Binary Operator  
+```{R echo = TRUE, eval = TRUE}
+"%p%" <- function(left, right){
+  paste(left, right, sep = " ")
+}
+"Hello" %p% "world!"
+```
+
+### lapply()
+Takes a list and a function, and applies the funcion to each list member. On a datatable for example, it applies the function to each column.
+`lapply(data, fun)` # data = datatable for example and fun some function such as class(). write fun name only, no parenthesis.  
+lapply() returns a list - hence the _l_  
+
+```{r, echoe = TRUE, eval = TRUE}
+a <- c("John", 34, 65, 55, 45, 1)
+b <- c("Mary", 44, 45, 68, 45, 2)
+my_data <- data.frame(rbind(a, b)) # without data.frame, my_data would be a matrix and coerce all integers to char
+cnames <- c("patient", "age", "weight", "bp", "rating", "test")
+colnames(my_data) <- cnames
+my_data$age <- c(100, 50)
+my_data
+
+lapply(my_data, class) # lapply returns list
+
+# Another example
+age <- as.data.frame(my_data[, 2])
+age
+
+lapply(age, mean)
+
+```
+
+### sapply()
+sapply() uses lapply behind the scenes and then _simplifies_ the result transforming the list in vector, hence the _s_ fro simplify.
+
+```{r, echoe = TRUE, eval = TRUE}
+a <- c("John", 100, 65, 55, 45, 1)
+b <- c("Mary", 50, 45, 68, 45, 2)
+my_data <- data.frame(rbind(a, b)) # without data.frame, my_data would be a matrix and coerce all integers to char
+cnames <- c("patient", "age", "weight", "bp", "rating", "test")
+colnames(my_data) <- cnames
+my_data$age <- c(100, 50)
+my_data
+
+sapply(my_data, class) # sapply resturns vector
+
+# Another example
+
+age <- as.data.frame(my_data[, 2])
+age
+sapply(age, mean)
+```
+
+# Extract percentage. See _Binary data makes it easy to compute percentage_ below
+
+
+```{r, echoe = TRUE, eval = TRUE}
+a <- c(1, 0, 1)
+b <- c(1, 1, 0)
+c <- c(1, 1, 1)
+d <- c(1, 0, 0)
+e <- c(1, 1, 0)
+my_data <- data.frame(rbind(a, b, c, d, e)) # without data.frame, my_data would be a matrix and coerce all integers to char
+cnames <- c("Red", "Blue", "Yellow")
+colnames(my_data) <- cnames
+my_data
+
+sapply(my_data, mean)
+
+# 1 is 100%, 0.6 is 60%, 0.4 is 40%. % of times that each color is used (value = 1)
+```
+
+
+**sapply output**  
+
+>In general, if the result is a list where every element is of length one, then sapply() returns a vector. If the result is a list where every element is a vector of the same length (> 1), sapply() returns a
+matrix. If sapply() can't figure things out, then it just returns a list, no different from what lapply()
+would give you. _Source: swirl() package._  
+
+### Binary data makes it easy to compute percentage
+
+>Perhaps it's more informative to find the proportion of flags (out of 194) containing each color. Since > each column is just a bunch of 1s and 0s, the arithmetic mean of each column will give us the proportion > of 1s. (If it's not clear why, think of a simpler situation where you have three 1s and two 0s -- (1 + 1 > + 1 + 0 + 0)/5 = 3/5 = 0.6). _Source: swirl() package_
+
+
+### range()  
+Returns the min and max values of a numeric vector (first argument)
+
+```{r, echoe = TRUE, eval = TRUE}
+a <- c(0, 1, 0)
+b <- c(30, 1, 0)
+c <- c(1, 0, 15)
+d <- c(1, 5, 0)
+e <- c(1, 10, 0)
+my_data <- data.frame(rbind(a, b, c, d, e)) # without data.frame, my_data would be a matrix and coerce all integers to char
+cnames <- c("Star", "Square", "Circle")
+colnames(my_data) <- cnames
+my_data
+
+sapply(my_data, range)
+
+# returns the min (row 1) and max (row 2) values for each col.
+```
+
+
