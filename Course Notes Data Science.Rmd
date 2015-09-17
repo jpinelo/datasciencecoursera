@@ -5,7 +5,7 @@ date: "September 11, 2015"
 output: pdf_document
 ---
 _________________________
-READ ME: These are my personal notes of studying R. It's a draft. A rather disorganised and incomplete draft. Use at your own peril :). If you find any mistake, please make a pull request.
+READ ME: These are my personal notes of studying R. It's a draft. A rather disorganised and incomplete draft. Use at your own peril :). If you find any mistake feel free to make a pull request, I would appreciate that. Thanks.
 
 ### Calculating / Estimating Memory Requirements  
 DATA: Data frame with 1,500,000 rows and 120 columns of numeric data and a 64 bits
@@ -128,6 +128,11 @@ y[good]
 **To use in data frames**  
 `good <- complete.cases(df)`, removes rows with NAs in accross all variables.  
 `df[good, ][1:6, ]`, will contain only rows where there are no NAs  
+
+
+  planets_df[planets_df$has_rings == TRUE, ]  
+  planets_df[1:3,"type"]
+
 
 
 ### Sequences
@@ -433,5 +438,18 @@ andy[which(andy[,"Day"] == 30), "Weight"]
 > do.call lets you specify a function and then passes a list as if each element of the list were an argument to the function. _Source: https://github.com/derekfranks/practice_assignment/blob/master/practice_assignment.rmd_
 
 do.call(function_you_want_to_use, list_of_arguments)  
+
+
+### Add col to data frame   
+```{R echo = TRUE, eval = FALSE}
+df$new_col <- a_vec
+df[["new_col"]] <- a_vec
+df <- cbind(df, new_col = a_vec)
+```
+
+### sample()
+One cannot `sample`from the data frame, but from the values. Ex:  
+
+`sample <- df[sample(nrow(df), 100, replace = FALSE, prob = NULL),]`
 
 
